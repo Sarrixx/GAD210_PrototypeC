@@ -63,6 +63,7 @@
     <Compile Include="Assets\Scripts\OxygenVolume.cs" />
     <Compile Include="Assets\Scripts\OxygenHandler.cs" />
     <Compile Include="Assets\Scripts\CraftingKeywordParser.cs" />
+    <Compile Include="Assets\Scripts\TargetObject.cs" />
     <Compile Include="Assets\Scripts\OxygenPickup.cs" />
     <Compile Include="Assets\Scripts\Interaction.cs" />
     <Compile Include="Assets\Scripts\MouseLook.cs" />

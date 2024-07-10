@@ -1,4 +1,3 @@
-using System.Net.NetworkInformation;
 using UnityEngine;
 
 /// <summary>
@@ -37,27 +36,8 @@ public class PlayerController : MonoBehaviour
     public float Gravity { get { return gravity; } }
     public float JumpForce { get { return jumpForce; } }
 
-    public bool IsGrounded
-    {
-        get
-        {
-            if (controller != null)
-            {
-                if (controller.isGrounded == true)
-                {
-                    return true;
-                }
-                else
-                {
-                    Debug.DrawRay(transform.position, -transform.up * controller.height * groundDetectionRange, Color.red);
-                    return Physics.Raycast(transform.position, -transform.up, controller.height * groundDetectionRange);
-                }
-            }
-            return false;
-        }
-    }
-
     [Header("Sprinting Properties")]
+    [SerializeField] private bool sprintingEnabled = false;
     [Tooltip("Movement speed multiplier while sprinting.")]
     [Range(1f, 3f)][SerializeField] private float sprintMultiplier = 2f;
     [Tooltip("Defines the rate at which stamina is drained.")]
@@ -135,7 +115,7 @@ public class PlayerController : MonoBehaviour
     {
         if (controller != null)
         {
-            if (IsGrounded == true)
+            if (controller.isGrounded == true)
             {
                 velocity = -gravity * Time.deltaTime;
             }
@@ -151,6 +131,12 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape) == true)
+        {
+            Application.OpenURL("https://forms.gle/XoRZPWFpwxzbp8Ka9");
+            Application.Quit();
+        }
+
         if (Physics.SphereCast(transform.position, controller.radius, Vector3.up, out RaycastHit _, headDetectionRange) == true)
         {
             if (velocity > 0)
@@ -161,22 +147,25 @@ public class PlayerController : MonoBehaviour
 
         if (MovementEnabled == true)
         {
-            if (Sprinting == false && Input.GetButtonDown("Sprint") == true)
+            if (sprintingEnabled == true)
             {
-                ToggleSprintSpeed(true);
+                if (Sprinting == false && Input.GetButtonDown("Sprint") == true)
+                {
+                    ToggleSprintSpeed(true);
+                }
+                else if (Sprinting == true && Input.GetButtonUp("Sprint") == true)
+                {
+                    ToggleSprintSpeed(false);
+                }
+                else if (controller.isGrounded == true && Sprinting == true && Input.GetButton("Sprint") == false)
+                {
+                    ToggleSprintSpeed(false);
+                }
+                //else if (controller.isGrounded == true && Sprinting == false && Input.GetButton("Sprint") == true)
+                //{
+                //    ToggleSprintSpeed(true);
+                //}
             }
-            else if (Sprinting == true && Input.GetButtonUp("Sprint") == true)
-            {
-                ToggleSprintSpeed(false);
-            }
-            else if (IsGrounded == true && Sprinting == true && Input.GetButton("Sprint") == false)
-            {
-                ToggleSprintSpeed(false);
-            }
-            //else if (controller.isGrounded == true && Sprinting == false && Input.GetButton("Sprint") == true)
-            //{
-            //    ToggleSprintSpeed(true);
-            //}
             if (crouching == false && Input.GetButton("Crouch") == true)
             {
                 ToggleCrouch(true);
@@ -185,7 +174,7 @@ public class PlayerController : MonoBehaviour
             {
                 ToggleCrouch(false);
             }
-            if (IsGrounded == true && crouching == true && Input.GetButton("Crouch") == false)
+            if (controller.isGrounded == true && crouching == true && Input.GetButton("Crouch") == false)
             {
                 ToggleCrouch(false);
             }
@@ -283,7 +272,7 @@ public class PlayerController : MonoBehaviour
     {
         if (disableJump == false)
         {
-            if (controller != null && IsGrounded == true && Input.GetButtonDown("Jump") == true)
+            if (controller != null && controller.isGrounded == true && Input.GetButtonDown("Jump") == true)
             {
                 velocity = jumpForce;
             }
@@ -294,7 +283,7 @@ public class PlayerController : MonoBehaviour
     {
         if (toggle == true)
         {
-            if (crouching == false && IsGrounded == true)
+            if (crouching == false && controller.isGrounded == true)
             {
                 ToggleSprintSpeed(false);
                 crouching = true;
@@ -308,7 +297,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (crouching == true && IsGrounded == true)
+            if (crouching == true && controller.isGrounded == true)
             {
                 crouching = false;
                 targetHeight = controllerHeight;
@@ -330,7 +319,7 @@ public class PlayerController : MonoBehaviour
     {
         if (toggle == true)
         {
-            if (Sprinting == false && IsGrounded == true)
+            if (Sprinting == false && controller.isGrounded == true)
             {
                 ToggleCrouch(false);
                 Sprinting = true;
@@ -339,7 +328,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (Sprinting == true && IsGrounded == true)
+            if (Sprinting == true && controller.isGrounded == true)
             {
                 Sprinting = false;
                 currentMovementSpeed = defaultSpeed;

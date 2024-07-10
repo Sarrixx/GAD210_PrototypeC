@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
@@ -124,7 +122,7 @@ public class OxygenHandler : MonoBehaviour
             }
             else if(currentOxygen >= labouredBreathingBounds.x && currentOxygen <= labouredBreathingBounds.y && breathTimer >= labouredBreathingTime)
             {
-                aSrc.PlayOneShot(heavyBreathingClips[Random.Range(0, labouredBreathingClips.Length)]);
+                aSrc.PlayOneShot(labouredBreathingClips[Random.Range(0, labouredBreathingClips.Length)]);
                 breathTimer = 0f;
             }
         }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class OxygenVolume : MonoBehaviour
@@ -8,6 +6,8 @@ public class OxygenVolume : MonoBehaviour
     [SerializeField] private Transform respawnPoint;
 
     private static PlayerController controller;
+
+    public static event OxygenHandler.OxygenDepletedDelegate PlayerRespawnEvent;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -41,6 +41,7 @@ public class OxygenVolume : MonoBehaviour
         if(controller != null && respawnPoint != null)
         {
             controller.TeleportToPosition(respawnPoint.position);
+            PlayerRespawnEvent?.Invoke();
         }
     }
 }
